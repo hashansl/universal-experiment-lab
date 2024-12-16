@@ -47,18 +47,27 @@ def create_variable_folders(base_path, variables):
         os.makedirs(os.path.join(base_path, variable), exist_ok=True)
     print('Done creating folders for each variable')
 
-def process_state(state, selected_variables, selected_variables_with_censusinfo,df):
+def process_state(state, selected_variables, selected_variables_with_censusinfo,df,mort):
     """Process data for a given state."""
-    svi_od_path = os.path.join(data_path, state, state + '.shp')
-    svi_od = gpd.read_file(svi_od_path)
-    # # for variable in selected_variables:
-    #     # svi_od = svi_od[svi_od[variable] != -999]
+    svi_od = mort[mort['ST_ABB'] == state]
 
         
     svi_od_filtered_state = svi_od[selected_variables_with_censusinfo].reset_index(drop=True)
 
+
+
     # Get the unique counties
     unique_county_stcnty = svi_od_filtered_state['STCNTY'].unique()
+
+    print(f'length of unique counties: {len(unique_county_stcnty)}')
+
+    # get the counties with more than 10 census data
+    unique_county_stcnty = [county_stcnty for county_stcnty in unique_county_stcnty if len(svi_od_filtered_state[svi_od_filtered_state['STCNTY'] == county_stcnty]) > 10]
+
+    print(f'length of unique counties with more than 10 census data: {len(unique_county_stcnty)}')
+
+    print(f'svi_od shape: {svi_od_filtered_state.shape}')
+
 
     for county_stcnty in unique_county_stcnty:
         # Filter the dataframe to include only the current county
@@ -100,8 +109,15 @@ def process_state(state, selected_variables, selected_variables_with_censusinfo,
             st.compute_persistence()
             persistence = st.persistence()
 
+            print(f'County: {county_stcnty}, Variable: {variable_name}, Census count: {len(df_one_variable)}')
+
+
             intervals_dim0 = st.persistence_intervals_in_dimension(0)
             intervals_dim1 = st.persistence_intervals_in_dimension(1)
+
+            print(f'Intervals dim0: {intervals_dim0}')
+
+
             
             # get the infinity values count for each dimension
             infinity_dim0 = np.sum(intervals_dim0[:, 1] == np.inf)
@@ -145,6 +161,7 @@ def process_state(state, selected_variables, selected_variables_with_censusinfo,
             }])
 
             df = pd.concat([df, new_row], ignore_index=True)
+        break
 
     return df
 
@@ -157,27 +174,73 @@ def process_state(state, selected_variables, selected_variables_with_censusinfo,
 if __name__ == "__main__":
     # Main execution
     base_path = '/home/h6x/git_projects/universal-experiment-lab/experiment_1/outputs'
-    data_path = '/home/h6x/git_projects/ornl-svi-data-processing/processed_data/SVI/2020/SVI2020_MIN_MAX_SCALED_MISSING_REMOVED'
+    # data_path = '/home/h6x/git_projects/ornl-svi-data-processing/processed_data/SVI/2020/SVI2020_MIN_MAX_SCALED_MISSING_REMOVED'
+
+    mort_path = '/home/h6x/git_projects/universal-experiment-lab/experiment_1/data/shape/mortality.gdb'
+
+    # Read the mortality data
+    mort = gpd.read_file(mort_path)
+
+    # drop all the columns that stats with EP
+    mort = mort.drop(mort.filter(regex='EP').columns, axis=1)
+
+    # print(mort.head(3))
+
+    states = mort['ST_ABB'].unique().tolist()
+
+    #drop 'DC' from the list
+    states.remove('DC')
+
+    # state = 'TN'
+
+    selected_variables = ['MOR_14']
+
+    selected_variables_with_censusinfo = ['STCNTY'] + selected_variables + ['geometry']
+
+    # create empty df
+    df = pd.DataFrame(columns=['State', 'STCNTY','Variable','Census_count', 'H0_count', 'H1_count', 'H0_inf_count', 'H1_inf_count', 'H1_withou_inf_count', 'H0_withou_inf_count', 'census_count', 'Total_life_span_H0', 'Total_mid_life_span_H0'])
+
+    state = 'TN'
+
+    df = process_state(state, selected_variables, selected_variables_with_censusinfo,df,mort)
+
+    print(f'Sum Total Life Span H0: {df["Total_life_span_H0"].sum()}')
+
+
+
+    # for state in tqdm(states, desc="Processing states"):
+
+    #     df = process_state(state, selected_variables, selected_variables_with_censusinfo,df,mort)
+
+    # # save the df to a csv file in base path
+    # df.to_csv(f'{base_path}/census_complex_info_mortality_simplex.csv', index=False)
+    # print('All states processed.')
+
+
+
+
+
+
 
     # states = get_folders(data_path)
 
-    selected_variables = [
-         'EP_POV150','EP_UNEMP', 'EP_NOHSDP', 'EP_UNINSUR', 'EP_AGE65', 'EP_AGE17', 'EP_DISABL', 
-        'EP_SNGPNT', 'EP_LIMENG', 'EP_MINRTY', 'EP_MUNIT', 'EP_MOBILE', 'EP_CROWD', 'EP_NOVEH', 'EP_GROUPQ'
-    ]
+    # selected_variables = [
+    #      'EP_POV150','EP_UNEMP', 'EP_NOHSDP', 'EP_UNINSUR', 'EP_AGE65', 'EP_AGE17', 'EP_DISABL', 
+    #     'EP_SNGPNT', 'EP_LIMENG', 'EP_MINRTY', 'EP_MUNIT', 'EP_MOBILE', 'EP_CROWD', 'EP_NOVEH', 'EP_GROUPQ'
+    # ]
 
-    selected_variables_with_censusinfo = ['FIPS', 'STCNTY'] + selected_variables + ['geometry']
+    # selected_variables_with_censusinfo = ['FIPS', 'STCNTY'] + selected_variables + ['geometry']
 
-    # state ='TN'
+    # # state ='TN'
 
-    # create empty df
-    df = pd.DataFrame(columns=['State', 'STCNTY','Variable','Census_count', 'H0_count', 'H1_count', 'H0_inf_count', 'H1_inf_count'])
+    # # create empty df
+    # df = pd.DataFrame(columns=['State', 'STCNTY','Variable','Census_count', 'H0_count', 'H1_count', 'H0_inf_count', 'H1_inf_count'])
 
-    for state in tqdm(states, desc="Processing states"):
+    # for state in tqdm(states, desc="Processing states"):
 
-        df = process_state(state, selected_variables, selected_variables_with_censusinfo,df)
+    #     df = process_state(state, selected_variables, selected_variables_with_censusinfo,df)
 
 
-    # save the df to a csv file in base path
-    df.to_csv(f'{base_path}/census_complex_info_mortality_simplex.csv', index=False)
-    print('All states processed.')
+    # # save the df to a csv file in base path
+    # df.to_csv(f'{base_path}/census_complex_info_mortality_simplex.csv', index=False)
+    # print('All states processed.')
