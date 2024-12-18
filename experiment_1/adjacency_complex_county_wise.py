@@ -184,7 +184,7 @@ if __name__ == "__main__":
 
     # selected_variables = ['MOR_14','MOR_15','MOR_16','MOR_17','MOR_18','MOR_19','MOR_20','PRIS_20']
 
-    selected_variables = ['PRIS_20']
+    selected_variables = ['MOR_18']
 
     selected_variables_with_censusinfo = ['STCNTY'] + selected_variables + ['geometry']
 
@@ -207,6 +207,8 @@ if __name__ == "__main__":
 
     tl_df = pd.DataFrame(columns=['State', 'Total_life_span', 'MOR_20'])
 
+    # print(mortality_df.head(3))
+
 
     for state in tqdm(states, desc="Processing states"):
 
@@ -224,30 +226,9 @@ if __name__ == "__main__":
     # plot the scatter plot
     plt.scatter(tl_df['Total_life_span'], tl_df['Sum_of_MOR_20'])
     plt.xlabel('Total life span')
-    plt.ylabel('Sum of MOR_20')
-    plt.title('Total life span vs Sum of MOR_20')
-    plt.savefig('/home/h6x/git_projects/universal-experiment-lab/experiment_1/total_life_span_PRIS_20_vs_mort_20.png')
+    plt.ylabel('Sum of MOR_18')
+    plt.title('Total life span vs Sum of MOR_18')
+    plt.savefig('/home/h6x/git_projects/universal-experiment-lab/experiment_1/total_life_span_MOR_18_vs_MOR_18.png')
 
     
-    # states = get_folders(data_path)
-
-    # selected_variables = [
-    #      'EP_POV','EP_UNEMP', 'EP_NOHSDP', 'EP_UNINSUR', 'EP_AGE65', 'EP_AGE17', 'EP_DISABL', 
-    #     'EP_SNGPNT', 'EP_LIMENG', 'EP_MINRTY', 'EP_MUNIT', 'EP_MOBILE', 'EP_CROWD', 'EP_NOVEH', 'EP_GROUPQ'
-    # ]
-
-    # selected_variables_with_censusinfo = ['FIPS', 'STCNTY'] + selected_variables + ['geometry']
-
-    # # state ='TN'
-
-    # # create empty df
-    # df = pd.DataFrame(columns=['State', 'STCNTY','Variable','Census_count', 'H0_count', 'H1_count', 'H0_inf_count', 'H1_inf_count'])
-
-    # for state in tqdm(states, desc="Processing states"):
-
-    #     df = process_state(state, selected_variables, selected_variables_with_censusinfo,df)
-
-
-    # # save the df to a csv file in base path
-    # df.to_csv(f'{base_path}/census_complex_info.csv', index=False)
-    # print('All states processed.')
+ 
