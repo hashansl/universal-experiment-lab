@@ -157,12 +157,12 @@ def process_state(state, selected_variables, selected_variables_with_censusinfo,
 if __name__ == "__main__":
     # Main execution
     base_path = '/home/h6x/git_projects/universal-experiment-lab/experiment_1/outputs'
-    data_path = '/home/h6x/git_projects/ornl-svi-data-processing/processed_data/SVI/2020/SVI2020_MIN_MAX_SCALED_MISSING_REMOVED'
+    data_path = '/home/h6x/git_projects/ornl-svi-data-processing/processed_data/SVI/SVI2018_MIN_MAX_SCALED_MISSING_REMOVED'
 
     states = get_folders(data_path)
 
     selected_variables = [
-         'EP_POV150','EP_UNEMP', 'EP_NOHSDP', 'EP_UNINSUR', 'EP_AGE65', 'EP_AGE17', 'EP_DISABL', 
+         'EP_POV','EP_UNEMP', 'EP_NOHSDP', 'EP_UNINSUR', 'EP_AGE65', 'EP_AGE17', 'EP_DISABL', 
         'EP_SNGPNT', 'EP_LIMENG', 'EP_MINRTY', 'EP_MUNIT', 'EP_MOBILE', 'EP_CROWD', 'EP_NOVEH', 'EP_GROUPQ'
     ]
 
