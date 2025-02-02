@@ -46,6 +46,7 @@ def compute_persistence(simplices, filtered_df, variable_name):
     TML = 0
     for interval in intervals_dim0:
         TML += (interval[1] + interval[0])/2
+        # print(f'interval: {interval[1]} - {interval[0]} get added to TML: {TML}')
     
     AL = TL/len(intervals_dim0)
     AML = TML/len(intervals_dim0)
