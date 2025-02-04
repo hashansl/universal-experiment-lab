@@ -35,6 +35,11 @@ def generate_grid_dataframe(grid_side_length, autocorrelation="positive", random
     # Generate initial random values
     random_values = np.random.normal(mean, std_dev, grid_size) # Random values with normal distribution
     # random_values =  np.random.wald(mean=0.5, scale=1, size=grid_size)  # Inverse Gaussian
+    
+    # means = np.random.normal(mean, std_dev, grid_size) # Random values with normal distribution
+    # # generate poisson values using the means
+    # random_values = np.random.poisson(lam=means, size=grid_size)
+
 
     if autocorrelation == "none":
         values = random_values  # No spatial correlation

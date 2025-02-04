@@ -36,20 +36,28 @@ def run_single_simulation(grid_side_length, county_autocorrelation, census_autoc
             # Form the simplicial complex
             simplex = adj_simplex.form_simplicial_complex()
 
-            total_h0_points, tl, al, tml, aml = compute_persistence(simplex,filtered_df, 'Rate_cen')
+            total_h0_points, tl, al, tml, aml, intervals_dim0 = compute_persistence(simplex,filtered_df, 'Rate_cen')
 
             if filter_meth == 'up':
                 gdf_county.loc[country_index, 'up_AL'] = al
                 gdf_county.loc[country_index, 'up_AML'] = aml
 
                 gdf_county.loc[country_index, 'up_TL'] = tl
-                gdf_county.loc[country_index, 'up_TML'] = tml
+                gdf_county.loc[country_index, 'up_ML'] = tml
+
+                # gdf_county.loc[country_index, 'intervals_dim0'] = intervals_dim0
+
             elif filter_meth == 'down':
                 gdf_county.loc[country_index, 'down_AL'] = al
                 gdf_county.loc[country_index, 'down_AML'] = aml
 
                 gdf_county.loc[country_index, 'down_TL'] = tl
-                gdf_county.loc[country_index, 'down_TML'] = tml
+                gdf_county.loc[country_index, 'down_ML'] = tml
+
+        # gdf_county.loc[country_index, 'intervals_dim0'] = intervals_dim0
+        print(f'Country index: {country_index} has been processed.')
+        print(f'Number of census tracts: {number_of_census_tracts}')
+        print(f"Intervals_dim0: {intervals_dim0}")
                 
         gdf_county.loc[country_index, 'cencus_count'] = number_of_census_tracts
 

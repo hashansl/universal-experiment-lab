@@ -33,7 +33,14 @@ def generate_grid_dataframe(grid_side_length, autocorrelation="positive", random
     mean, std_dev = 0.5, 0.125
 
     # Generate initial random values
-    random_values = np.random.normal(mean, std_dev, grid_size)  # Random values with normal distribution
+    # random_values = np.random.normal(mean, std_dev, grid_size)  # Random values with normal distribution
+
+    lambda_vals = np.random.normal(mean, std_dev, grid_size)
+
+    E = 30  # Expected value
+    lambda_vals = lambda_vals * E
+
+    random_values =  np.array([np.random.poisson(lam) for lam in lambda_vals])  # Poisson distribution
 
     if autocorrelation == "none":
         values = random_values  # No spatial correlation

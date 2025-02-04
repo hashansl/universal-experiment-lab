@@ -58,5 +58,5 @@ def compute_persistence(simplices, filtered_df, variable_name):
     AL = TL/len(intervals_dim0)
     AML = TML/len(intervals_dim0)
 
-    return H0_data_points, TL, AL, TML, AML
+    return H0_data_points, TL, AL, TML, AML, intervals_dim0
 

@@ -33,8 +33,13 @@ def compute_persistence(simplices, filtered_df, variable_name):
     # intervals_dim1 = st.persistence_intervals_in_dimension(1)
     intervals_dim0 = st.persistence_intervals_in_dimension(0)
 
+    max_value = filtered_df[variable_name].max()
+    print(f'Max value: {max_value}')
+
     # replace inf with a large number
-    intervals_dim0[:, 1][np.isinf(intervals_dim0[:, 1])] = 16
+    intervals_dim0[:, 1][np.isinf(intervals_dim0[:, 1])] = max_value
+
+    print(f'Persistence intervals for dimension 0: {intervals_dim0}')
 
     # calculate topological summaries for dimension 1
     H0_data_points = len(intervals_dim0)
@@ -50,6 +55,8 @@ def compute_persistence(simplices, filtered_df, variable_name):
     
     AL = TL/len(intervals_dim0)
     AML = TML/len(intervals_dim0)
+    # AL = 1
+    # AML = 1
 
     return H0_data_points, TL, AL, TML, AML
 

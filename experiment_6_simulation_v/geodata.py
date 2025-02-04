@@ -33,8 +33,14 @@ def generate_grid_dataframe(grid_side_length, autocorrelation="positive", random
     mean, std_dev = 0.5, 0.125
 
     # Generate initial random values
-    random_values = np.random.normal(mean, std_dev, grid_size) # Random values with normal distribution
+    # random_values = np.random.normal(mean, std_dev, grid_size) # Random values with normal distribution
     # random_values =  np.random.wald(mean=0.5, scale=1, size=grid_size)  # Inverse Gaussian
+    lambda_vals = np.random.normal(mean, std_dev, grid_size)
+
+    E = 30  # Expected value
+    lambda_vals = lambda_vals * E
+
+    random_values =  np.array([np.random.poisson(lam) for lam in lambda_vals])  # Poisson distribution
 
     if autocorrelation == "none":
         values = random_values  # No spatial correlation
@@ -47,6 +53,8 @@ def generate_grid_dataframe(grid_side_length, autocorrelation="positive", random
 
     # Assign values to the DataFrame
     df['Value'] = values.ravel()
+
+    # df['Value'] = df['Value'] * 30  # Multiply values by 30 (expected value)
 
     # Function to calculate square coordinates
     def calculate_square_coordinates(row):
