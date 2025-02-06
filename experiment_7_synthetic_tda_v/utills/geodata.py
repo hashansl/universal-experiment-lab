@@ -25,8 +25,14 @@ def generate_grid_dataframes(grid_side_length, county_autocorrelation="positive"
     mean, std_dev = 0.5, 0.5
 
     # Generate initial random values
-    random_values = np.random.normal(mean, std_dev, grid_size) # Random values with normal distribution
+    # random_values = np.random.normal(mean, std_dev, grid_size) # Random values with normal distribution
     # random_values =  np.random.wald(mean=0.5, scale=1, size=grid_size)  # Inverse Gaussian
+    lambda_vals = np.random.normal(mean, std_dev, grid_size)
+
+    E = 30  # Expected value
+    lambda_vals = lambda_vals * E
+    lambda_vals = np.clip(lambda_vals, a_min=0, a_max=None)
+    random_values =  np.array([np.random.poisson(lam) for lam in lambda_vals])  # Poisson distribution
 
     if county_autocorrelation == "none":
         values = random_values  # No spatial correlation
