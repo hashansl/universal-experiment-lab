@@ -39,6 +39,7 @@ def generate_grid_dataframe(grid_side_length, autocorrelation="positive", random
 
     E = 30  # Expected value
     lambda_vals = lambda_vals * E
+    lambda_vals = np.clip(lambda_vals, a_min=0, a_max=None)  # Clip negative values
 
     random_values =  np.array([np.random.poisson(lam) for lam in lambda_vals])  # Poisson distribution
 

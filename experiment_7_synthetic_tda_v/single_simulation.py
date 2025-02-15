@@ -55,9 +55,9 @@ def run_single_simulation(grid_side_length, county_autocorrelation, census_autoc
                 gdf_county.loc[country_index, 'down_ML'] = tml
 
         # gdf_county.loc[country_index, 'intervals_dim0'] = intervals_dim0
-        print(f'Country index: {country_index} has been processed.')
-        print(f'Number of census tracts: {number_of_census_tracts}')
-        print(f"Intervals_dim0: {intervals_dim0}")
+        # print(f'Country index: {country_index} has been processed.')
+        # print(f'Number of census tracts: {number_of_census_tracts}')
+        # print(f"Intervals_dim0: {intervals_dim0}")
                 
         gdf_county.loc[country_index, 'cencus_count'] = number_of_census_tracts
 
